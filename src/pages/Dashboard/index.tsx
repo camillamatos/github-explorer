@@ -2,8 +2,8 @@ import React, { useState, useEffect, FormEvent } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
-import api from '../../services/api';
-import logoImg from '../../assets/logo.svg';
+import api from 'services/api';
+import logoImg from 'assets/logo.svg';
 
 import { Title, Form, Repositories, Error } from './styles';
 
@@ -16,7 +16,7 @@ interface Repository {
   };
 }
 
-const Dashboard: React.FC = () => {
+function Dashboard(): JSX.Element {
   const [repositories, setRepositories] = useState<Repository[]>(() => {
     const storagedRepositories = localStorage.getItem(
       '@GithubExplorer:repositories',
@@ -38,9 +38,9 @@ const Dashboard: React.FC = () => {
     );
   }, [repositories]);
 
-  async function handleAddRepository(
+  const handleAddRepository = async (
     event: FormEvent<HTMLFormElement>,
-  ): Promise<void> {
+  ): Promise<void> => {
     event.preventDefault();
 
     if (!newRepo) {
@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
     } catch (Err) {
       setInputError('Erro na busca por este repositório');
     }
-  }
+  };
 
   return (
     <>
@@ -98,6 +98,6 @@ const Dashboard: React.FC = () => {
       </Repositories>
     </>
   );
-};
+}
 
 export default Dashboard;

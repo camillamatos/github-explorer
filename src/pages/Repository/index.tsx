@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useRouteMatch, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
-import api from '../../services/api';
-import logoImg from '../../assets/logo.svg';
+import api from 'services/api';
+import logoImg from 'assets/logo.svg';
 
 import { Header, RepositoryInfo, Issues } from './styles';
-
-interface RepositoryParams {
-  repository: string;
-}
 
 interface Repository {
   full_name: string;
@@ -32,20 +28,22 @@ interface Issue {
   };
 }
 
-const Repository: React.FC = () => {
+function Repository(): JSX.Element {
   const [repository, setRepository] = useState<Repository | null>(null);
   const [issues, setIssues] = useState<Issue[]>([]);
-  const { params } = useRouteMatch<RepositoryParams>();
+  const { user, repository: repositoryName } = useParams();
 
   useEffect(() => {
-    api.get(`repos/${params.repository}`).then(response => {
+    if (!repositoryName || !user) return;
+
+    api.get(`repos/${user}/${repositoryName}`).then(response => {
       setRepository(response.data);
     });
 
-    api.get(`repos/${params.repository}/issues`).then(response => {
+    api.get(`repos/${user}/${repositoryName}/issues`).then(response => {
       setIssues(response.data);
     });
-  }, [params.repository]);
+  }, [repositoryName, user]);
 
   return (
     <>
@@ -99,6 +97,6 @@ const Repository: React.FC = () => {
       </Issues>
     </>
   );
-};
+}
 
 export default Repository;
